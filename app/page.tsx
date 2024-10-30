@@ -108,7 +108,10 @@ export default function LandingPage() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h3 className="text-3xl font-bold mb-4">¿Listo para optimizar tus cotizaciones?</h3>
             <p className="text-xl mb-8">Únete a COTAI y lleva la gestión de proyectos al siguiente nivel</p>
-            <Button size="lg" variant="secondary">
+            <Button size="lg" variant="secondary" onClick={() => {
+                window.location.href = "/clientCot"
+              }} >
+              
               Solicitar una demo <ChevronRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
