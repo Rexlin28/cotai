@@ -1,0 +1,74 @@
+// schema.prisma
+model UserInfo {
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
+  company  String?
+  role     UserRole
+  companyContracts ElectronicContract[] @relation("CompanyContracts")
+  clientContracts  ElectronicContract[] @relation("ClientContracts")
+}
+
+enum UserRole {
+  client
+  company
+}
+
+model ContractClause {
+  id            String @id @default(uuid())
+  title         String
+  content       String
+  isRequired    Boolean
+  isCustomizable Boolean
+}
+
+model TermsAndConditions {
+  id         String @id @default(uuid())
+  version    String
+  lastUpdated DateTime
+  content    String
+}
+
+model PrivacyPolicy {
+  id         String @id @default(uuid())
+  version    String
+  lastUpdated DateTime
+  content    String
+  electronicContract ElectronicContract? @relation(fields: [id], references: [privacyPolicyId])
+}
+
+model ElectronicContract {
+  id                String @id @default(uuid())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  status            ContractStatus
+  clientInfo        UserInfo @relation("ClientContracts", fields: [clientId], references: [id])
+  clientId          String
+  companyInfo       UserInfo @relation("CompanyContracts", fields: [companyId], references: [id])
+  companyId         String
+  projectDetails    ProjectDetails @relation(fields: [projectId], references: [projectId])
+  projectId         String
+  clauses           ContractClause[]
+  privacyPolicy     PrivacyPolicy @relation(fields: [privacyPolicyId], references: [id])
+  privacyPolicyId   String
+  privacyPolicy     PrivacyPolicy
+  signatures        Signature[]
+  customFields      Json
+}
+
+enum ContractStatus {
+  draft
+  pending
+  active
+  completed
+  cancelled
+}
+
+model Signature {
+  userId   String
+  signedAt DateTime
+  ipAddress String
+  contractId String
+  contract   ElectronicContract @relation(fields: [contractId], references: [id])
+}
+
